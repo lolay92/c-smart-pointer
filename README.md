@@ -123,11 +123,8 @@ int main() {
 
 ## Best Practices
 
-1. Always pair initialization with destruction
-2. Use move semantics when transferring ownership
-3. Prefer `make_shared` over `init_shared_ptr` for better performance
-4. Implement proper destructor functions for managed resources
-5. Check return values for NULL when creating new pointers
+1. Prefer `make_shared` over `init_shared_ptr` for better performance
+2. Implement proper destructor functions for managed resources
 
 ## Building
 

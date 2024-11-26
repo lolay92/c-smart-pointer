@@ -32,13 +32,14 @@ classDiagram
 
     class Functions {
         fail()
-        make_shared()
+        create_controller()
+        init_shared_ptr()
         weak_ptr_create()
+        make_shared()
         copy_shared_ptr()
         move_shared_ptr()
-        weak_ptr_lock()
-        destroy_shared_ptr()
-        destroy_weak_ptr()
+        destroy_sp()
+        destroy_wp()
     }
     
     shared_ptr_t --> Controller_t : references

@@ -1,3 +1,6 @@
+#ifndef LIB_H
+#define LIB_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdatomic.h>
@@ -31,4 +34,4 @@ shared_ptr_t* move_shared_ptr(shared_ptr_t* src);
 void destroy_sp(shared_ptr_t*);
 void destroy_wp(weak_ptr_t*);
 
-
+#endif

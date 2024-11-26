@@ -18,7 +18,7 @@ controller_t* create_controller(size_t resource_size, res_destructor_fn destruct
 
     controller->destructor = destructor;
     controller->resource_size = resource_size;
-    controller->ref_count= 1;
+    atomic_fetch_add(&(controller->ref_count), 1);
 
     return controller;
 }
@@ -52,7 +52,7 @@ shared_ptr_t* make_shared(size_t resource_size, res_destructor_fn destructor){
 shared_ptr_t* copy_shared_ptr(shared_ptr_t* src){
     shared_ptr_t* copy = malloc(sizeof(shared_ptr_t));
     if(!copy){ fail("Failed to allocate memory for shared_ptr initialization!"); }
-    
+
     if(src->controller){
         copy->controller = src->controller;
         atomic_fetch_add(&(src->controller->ref_count), 1);
@@ -77,7 +77,7 @@ shared_ptr_t* move_shared_ptr(shared_ptr_t* src){
     return dest; 
 }
 
-void destroy_shared_ptr(shared_ptr_t* sp){
+void destroy_sp(shared_ptr_t* sp){
     if(!sp || !(sp->controller) || !(sp->controller->resource)) {
         perror("Unsafe memory access during shared pointer destruction!");
         return; 
@@ -94,3 +94,23 @@ void destroy_shared_ptr(shared_ptr_t* sp){
     }
     free(sp);
 }
+
+weak_ptr_t* weak_ptr_create(shared_ptr_t* sp) {
+    weak_ptr_t* wp = malloc(sizeof(weak_ptr_t));
+    if(!wp) { fail("Failed to allocate memory for weak_ptr initialization!"); }
+    if(sp) {
+        wp->controller = sp->controller;
+        atomic_fetch_add(&(sp->controller->weak_count), 1);
+    } else { return; }
+
+    return wp; 
+}
+
+void destroy_wp(weak_ptr_t* wp) {
+    if(wp) {
+        atomic_fetch_sub(&(wp->controller->weak_count), 1);
+        wp->controller = NULL; 
+        free(wp); 
+    }
+}
+
